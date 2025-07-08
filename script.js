@@ -1,48 +1,32 @@
-let count = 0;
+const counters = document.getElementsByClassName('counter')
+const delay = 200;
 let timerId;
-const plusBtn = document.getElementById('plus');
-const minusBtn = document.getElementById('minus');
-const countOut = document.getElementById('count');
 
-plusBtn.onclick = increment
-minusBtn.onclick = decrement
+for (const counter of counters) initCounter(counter)
 
-plusBtn.onmousedown = startIncrement
-plusBtn.onmouseup = stopIncrement
-plusBtn.onmouseleave = stopIncrement
+function initCounter(parent) {
+  let count = 0;
+  const [plusBtn, minusBtn, countOut] = parent.children;
 
-minusBtn.onmousedown = startDecrement
-minusBtn.onmouseup = stopDecrement
-minusBtn.onmouseleave = stopDecrement
+  plusBtn.onclick = () => shift(1)
+  minusBtn.onclick = () => shift(-1)
 
-function increment() {
-  count++
+  plusBtn.onmousedown = () => startShifting(1)
+  plusBtn.onmouseup = plusBtn.onmouseleave = stopShifting
 
-  showCount()
-}
+  minusBtn.onmousedown = () => startShifting(-1)
+  minusBtn.onmouseup = minusBtn.onmouseleave = stopShifting
 
-function decrement() {
-  count--
+  function shift(step = 1) {
+    count += step
+    countOut.value = count
+  }
 
-  showCount()
-}
+  function startShifting(step = 1) {
+    timerId = setInterval(shift, delay, step)
+  }
 
-function showCount() {
-  countOut.value = count
-}
-
-function startIncrement() {
-  timerId = setInterval(increment, 150)
-}
-
-function stopIncrement() {
-  clearInterval(timerId)
-}
-
-function startDecrement() {
-  timerId = setInterval(decrement, 150)
-}
-
-function stopDecrement() {
-  clearInterval(timerId)
+  function stopShifting() {
+    clearInterval(timerId)
+  }
 }
